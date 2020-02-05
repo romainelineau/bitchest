@@ -13,9 +13,20 @@ class DatabaseSeeder extends Seeder
     {
         App\User::create(
             [
-                'name' => 'Dupont',
+                'first_name' => 'Martin',
+                'last_name' => 'Dupont',
                 'email' => 'dupont@la.fr',
                 'password' => bcrypt('pass'),
+                'role' => 'client',
+            ]
+        );
+        App\User::create(
+            [
+                'first_name' => 'Romain',
+                'last_name' => 'Elineau',
+                'email' => 'romain.elineau@gmail.com',
+                'password' => bcrypt('pass'),
+                'role' => 'admin',
             ]
         );
         // $this->call(UsersTableSeeder::class);
