@@ -11,6 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'HomeController@index')->name('home');
+Route::get('wallet', 'HomeController@showWallet')->name('wallet');
+Route::get('currencies', 'HomeController@showCurrencies')->name('currencies');
+Route::get('currency/{n}', 'HomeController@showCurrency')->where('n', '[A-Z]+');
+
+Route::get('users', 'UsersController@create');
+Route::post('users', 'UsersController@store');
