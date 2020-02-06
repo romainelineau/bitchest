@@ -55,7 +55,7 @@ class HomeController extends Controller
 
     public function showCurrencies()
     {
-        $request = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH&tsyms=EUR';
+        $request = 'https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,XRP,BCH,ADA,LTC,XEM,XLM,MIOTA,DASH&tsyms=EUR';
 
         $currenciesPrice = $this->requestAPI($request);
 
