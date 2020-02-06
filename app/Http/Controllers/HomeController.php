@@ -7,14 +7,29 @@ use GuzzleHttp\Client;
 
 class HomeController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
     public function index()
     {
-        return view('welcome');
+        return redirect('admin/currencies');
     }
 
     public function showWallet()
     {
-        return view('wallet');
+        return view('admin/wallet');
     }
 
     public function showCurrency($n)
@@ -30,7 +45,7 @@ class HomeController extends Controller
             array_push($currencyPrices, $currency->close);
         }
 
-        return view('currency',  [
+        return view('admin/currency',  [
             'currencyDays' => $currencyDays,
             'currencyPrices' => $currencyPrices,
             'currencyPrice' => $currencyPrice,
@@ -44,7 +59,12 @@ class HomeController extends Controller
 
         $currenciesPrice = $this->requestAPI($request);
 
-        return view('currencies', ['currenciesPrice' => $currenciesPrice]);
+        return view('admin/currencies', ['currenciesPrice' => $currenciesPrice]);
+    }
+
+    public function showAccount()
+    {
+        return view('admin/account');
     }
 
     public function requestAPI($request)

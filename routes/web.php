@@ -11,10 +11,14 @@
 |
 */
 
-Route::get('/', 'HomeController@index')->name('home');
-Route::get('wallet', 'HomeController@showWallet')->name('wallet');
-Route::get('currencies', 'HomeController@showCurrencies')->name('currencies');
-Route::get('currency/{n}', 'HomeController@showCurrency')->where('n', '[A-Z]+');
+Auth::routes();
+Route::get('/', 'HomeController@index');
+Route::get('home', 'HomeController@index')->name('home');
+Route::get('admin', 'HomeController@index')->name('admin');
 
-Route::get('users', 'UsersController@create');
-Route::post('users', 'UsersController@store');
+Route::get('admin/wallet', 'HomeController@showWallet')->name('wallet')->middleware('auth');
+Route::get('admin/currencies', 'HomeController@showCurrencies')->name('currencies')->middleware('auth');
+Route::get('admin/currency/{n}', 'HomeController@showCurrency')->where('n', '[A-Z]+')->middleware('auth');
+Route::get('admin/account', 'HomeController@showAccount')->name('account')->middleware('auth');
+
+Route::resource('admin/users', 'UsersController')->middleware('auth');

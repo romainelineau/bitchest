@@ -1,4 +1,4 @@
-@extends('master')
+@extends('layouts.app')
 
 @section('title')
     Crypto-monnaie {{ $id }}
@@ -21,23 +21,13 @@
     <script>
         var ctx = document.getElementById('myChart').getContext('2d');
 
-        var myChartLabels = {{ json_encode($currencyDays) }};
-        var myChartLabelsArray = [];
-        var myChartData = {{ json_encode($currencyPrices) }};
-        var myChartDataArray = [];
-
-        for(var i=0; i<myChartLabels.length; i++){
-            myChartLabelsArray.push(myChartLabels[i]);
-            myChartDataArray.push(myChartData[i]);
-        }
-
         var myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: myChartLabelsArray,
+                labels: @json($currencyDays),
                 datasets: [{
                     label: 'Cours sur les 30 derniers jours',
-                    data: myChartDataArray,
+                    data: @json($currencyPrices),
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1
