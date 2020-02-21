@@ -24,7 +24,15 @@
             <tr>
                 <th scope="row">{{ $loop->iteration }}</th>
                 <td>
-                    <p><img class="img-fluid" src="https://www.cryptocompare.com{{ $currency->EUR->IMAGEURL }}">{{ $currency->EUR->FROMSYMBOL }}</p>
+                    <p><img class="img-fluid currency-logo pr-2" src="https://www.cryptocompare.com{{ $currency->EUR->IMAGEURL }}">
+
+                        @foreach ($currenciesName as $currencyName)
+                            @if ($currencyName->initials == $currency->EUR->FROMSYMBOL)
+                                {{ $currencyName->name }}
+                            @endif
+                        @endforeach
+
+                    </p>
                 </td>
                 <td><p>{{ $currency->EUR->PRICE }}</p></td>
                 <td>

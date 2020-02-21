@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Currency;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 
@@ -32,9 +33,9 @@ class HomeController extends Controller
         return view('admin/wallet');
     }
 
-    public function showCurrency($n)
+    public function showCurrency($currencySymbol)
     {
-        $request = 'https://min-api.cryptocompare.com/data/v2/histoday?fsym='.$n.'&tsym=EUR&limit=30';
+        $request = 'https://min-api.cryptocompare.com/data/v2/histoday?fsym='.$currencySymbol.'&tsym=EUR&limit=30';
 
         $currencyPrice = $this->requestAPI($request);
         $currencyDays = [];
@@ -45,11 +46,20 @@ class HomeController extends Controller
             array_push($currencyPrices, $currency->close);
         }
 
+        $currenciesName = Currency::all();
+
+        foreach ($currenciesName as $currencyName) {
+            if ($currencyName->initials == $currencySymbol) {
+                $currency = $currencyName->name;
+            }
+        }
+
         return view('admin/currency',  [
             'currencyDays' => $currencyDays,
             'currencyPrices' => $currencyPrices,
             'currencyPrice' => $currencyPrice,
-            'id' => $n
+            'currencyName' => $currency,
+            'id' => $currencySymbol
         ]);
     }
 
@@ -59,7 +69,12 @@ class HomeController extends Controller
 
         $currenciesPrice = $this->requestAPI($request);
 
-        return view('admin/currencies', ['currenciesPrice' => $currenciesPrice]);
+        $currenciesName = Currency::all();
+
+
+
+
+        return view('admin/currencies', ['currenciesPrice' => $currenciesPrice, 'currenciesName' => $currenciesName]);
     }
 
     public function showAccount()

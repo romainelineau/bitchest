@@ -8,7 +8,7 @@
 
     <div class="row">
         <div class="col-12">
-            <h1>{{ $id }} : Cours sur les 30 derniers jours</h1>
+            <h1>{{ $currencyName }} : Cours sur les 30 derniers jours</h1>
         </div>
     </div>
 
