@@ -37,7 +37,7 @@
                 <td><p>{{ $currency->EUR->PRICE }}</p></td>
                 <td>
                     <a class="btn btn-outline-primary" href="currency/{{ $currency->EUR->FROMSYMBOL }}">Voir l'historique</a>
-                    <a class="btn btn-primary" href="#">Acheter</a>
+                    <a class="btn btn-primary" href="{{ route('buy', $currency->EUR->FROMSYMBOL) }}">Acheter</a>
                 </td>
             </tr>
             @endforeach

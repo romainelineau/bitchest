@@ -16,9 +16,9 @@
     </div>
 </nav>
 @else
-<div class="container-fluid">
-    <div class="row">
-        <nav class="col-2 d-none d-md-block bg-light sidebar">
+<div class="container-fluid p-0 m-0">
+    <div class="row p-0 m-0">
+        <nav id ="navbar-admin" class="col-2 d-none d-md-block bg-light sidebar">
             <div class="sidebar-sticky">
                 <a class="navbar-brand" href="{{ url('/') }}">BitChest</a>
                 <ul class="navbar-nav">
@@ -27,7 +27,7 @@
                     </li>
                     @if (Auth::user()->role == 'client')
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('wallet') }}">Portefeuille</a>
+                        <a class="nav-link" href="{{ route('wallet.index') }}">Portefeuille</a>
                     </li>
                     @else
                     <li class="nav-item">

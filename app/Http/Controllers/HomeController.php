@@ -28,11 +28,6 @@ class HomeController extends Controller
         return redirect('admin/currencies');
     }
 
-    public function showWallet()
-    {
-        return view('admin/wallet');
-    }
-
     public function showCurrency($currencySymbol)
     {
         $request = 'https://min-api.cryptocompare.com/data/v2/histoday?fsym='.$currencySymbol.'&tsym=EUR&limit=30';
@@ -70,9 +65,6 @@ class HomeController extends Controller
         $currenciesPrice = $this->requestAPI($request);
 
         $currenciesName = Currency::all();
-
-
-
 
         return view('admin/currencies', ['currenciesPrice' => $currenciesPrice, 'currenciesName' => $currenciesName]);
     }

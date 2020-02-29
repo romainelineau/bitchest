@@ -2,11 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Currency;
+use App\Transaction;
 
-class UsersController extends Controller
+class TransactionsController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,9 +26,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-
-        return view('admin/users/index', ['users' => $users]);
+        return view('admin.transactions.index');
     }
 
     /**
@@ -24,9 +34,24 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($symbol)
     {
-        //
+        $symbolCurrency = $symbol;
+        return view('admin.transactions.buy', ['symbol' => $symbolCurrency]);
+    }
+
+    public function buy($currencySymbol)
+    {
+        $userID = Auth::id();
+        $currencies = Currency::all();
+
+        foreach ($currencies as $currency) {
+            if ($currency->initials == $currencySymbol) {
+                $currencyID = $currency->id;
+                $currencyName = $currency->name;
+            }
+        }
+        return view('admin.transactions.buy', ['currencyID' => $currencyID, 'currencyName' => $currencyName, 'currencySymbol' => $currencySymbol, 'user' => $userID]);
     }
 
     /**
@@ -37,7 +62,14 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validation des données saisies
+        // Si incorrectes, redirection vers la page de création de formulaire
+        $this->validate($request, [
+            'price' =>  'required|regex:/^([0-9]+)(\.[0-9]{2}){0,1}$/'
+        ]);
+
+        // Insertion dans la table transaction
+        $transaction = Transaction::create($request->all());
     }
 
     /**
