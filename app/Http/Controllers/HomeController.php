@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Currency;
+use App\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 
@@ -71,7 +73,10 @@ class HomeController extends Controller
 
     public function showAccount()
     {
-        return view('admin/account');
+        $userID = Auth::id();
+        $user = User::find($userID);
+
+        return view('admin/account', ['user' => $user]);
     }
 
     public function requestAPI($request)

@@ -10892,3 +10892,11 @@ a.text-dark:focus {
   height: 100vh;
 }
 
+.color-red {
+  color: red;
+}
+
+.color-green {
+  color: green;
+}
+

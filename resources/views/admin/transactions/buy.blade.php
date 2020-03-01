@@ -15,21 +15,19 @@
         {{ csrf_field() }}
         <div class="form-row py-3">
             <div class="form-group col-12 col-md-2">
-                <label for="priceProduct" class="font-weight-bold">Indiquez le montant en euros (€) à investir :</label>
+                <label for="amountInvestment" class="font-weight-bold">Indiquez le montant en euros (€) à investir :</label>
                 <div class="input-group mb-2">
-                    <input type="text" class="form-control w-75" id="priceProduct" name="amount_investment" value="{{ old('price') }}" placeholder="Ex : 100.00">
+                    <input type="text" class="form-control w-75" id="amountInvestment" name="amount_investment" value="{{ old('amount_investment') }}" placeholder="Ex : 100.00">
                     <div class="input-group-prepend">
                         <div class="input-group-text">€</div>
                     </div>
                 </div>
-                @if($errors->has('price'))
-                <div class="alert alert-danger mt-2 w-100" role="alert">{{$errors->first('price')}}</div>
+                @if($errors->has('amount_investment'))
+                <div class="alert alert-danger mt-2 w-100" role="alert">{{$errors->first('amount_investment')}}</div>
                 @endif
             </div>
         </div>
         <input type="hidden" name="currency_id" value="{{ $currencyID }}">
-        <input type="hidden" name="user_id" value="{{ $user }}">
-        <input type="hidden" name="sold" value="0">
         <div class="form-row py-3 d-flex justify-content-center">
             <button type="submit" class="btn btn-primary btn-add-admin font-weight-bold" role="button">Acheter</button>
         </div>

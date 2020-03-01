@@ -15,7 +15,7 @@
             <tr>
             <th scope="col">#</th>
             <th scope="col">Crypto-monnaie</th>
-            <th scope="col">Cours</th>
+            <th scope="col">Cours actuel</th>
             <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -34,7 +34,7 @@
 
                     </p>
                 </td>
-                <td><p>{{ $currency->EUR->PRICE }}</p></td>
+                <td><p>{{ number_format($currency->EUR->PRICE, 2, '.', ' ') }} €</p></td>
                 <td>
                     <a class="btn btn-outline-primary" href="currency/{{ $currency->EUR->FROMSYMBOL }}">Voir l'historique</a>
                     <a class="btn btn-primary" href="{{ route('buy', $currency->EUR->FROMSYMBOL) }}">Acheter</a>
