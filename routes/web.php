@@ -22,6 +22,7 @@ Route::get('admin/currencies', 'HomeController@showCurrencies')->name('currencie
 Route::get('admin/currency/{n}', 'HomeController@showCurrency')->where('n', '[A-Z]+')->middleware('auth');
 
 Route::get('admin/currency/{n}/buy', 'TransactionsController@buy')->name('buy')->middleware('auth');
+Route::get('admin/wallet/sell/{n}', 'TransactionsController@sell')->middleware('auth');
 Route::resource('admin/wallet', 'TransactionsController')->middleware('auth');
 
 Route::resource('admin/users', 'UsersController')->middleware('auth');

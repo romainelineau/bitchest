@@ -21,7 +21,7 @@ class TransactionsController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Affichage de la liste des transactions de l'utilisateur
      *
      * @return \Illuminate\Http\Response
      */
@@ -39,9 +39,11 @@ class TransactionsController extends Controller
 
         // Initialisation des variables et arrays
         $totalInvestments = 0; // total des investissements en cours
+        $totalSale = 0; // total des montants perçus sur les anciens investissements (après vente)
         $totalPotentialGain = 0; // total des gains des investissements en cours
         $totalGain = 0; // total des gains obtenus après la vente des transactions
         $currenciesPriceNow = []; // tous les cours actuels
+        $currenciesPriceSales = []; // tous les cours des ventes effectuées
         $gainInvestments = []; // gains obtenus par transaction
 
         // Push des données dans les deux arrays
@@ -49,6 +51,7 @@ class TransactionsController extends Controller
             if ($transaction->sold == 0) {
                 $totalInvestments = $totalInvestments + $transaction->amount_investment;
             } else {
+                $totalSale = $totalSale + $transaction->amount_sale;
                 $totalGain = $totalGain + ($transaction->amount_sale - $transaction->amount_investment);
             }
             foreach ($currenciesName as $currency) {
@@ -63,40 +66,51 @@ class TransactionsController extends Controller
                     // on push dans un array la valeur du cours associé à l'id de la transaction
                     $currenciesPriceNow += [$transaction->id => $currencyPriceNowFormat];
 
-                    // Array des Gains
-                    // calcul du gain obtenu
-                    $gain = ($currencyPriceNow * $transaction->amount_investment / $transaction->price_currency) - $transaction->amount_investment;
-                    // on push dans la variable de total des gains en cours
-                    $totalPotentialGain = $totalPotentialGain + $gain;
-                    // on push dans un array la valeur du gain associé à l'id de la transaction
-                    $gainInvestments += [$transaction->id => number_format($gain, 2, '.', ' ')];
+                    // Array des Gains (transactions en cours / transactions terminées)
+                    if ($transaction->sold == 0) {
+                        // Calcul des gains pour les transactions en cours
+                        $gain = ($currencyPriceNow * $transaction->amount_investment / $transaction->price_currency) - $transaction->amount_investment;
+                        // on push dans la variable de total des gains en cours
+                        $totalPotentialGain = $totalPotentialGain + $gain;
+                        // on push dans un array la valeur du gain associé à l'id de la transaction
+                        $gainInvestments += [$transaction->id => number_format($gain, 2, '.', ' ')];
+                    } else {
+                        // on push dans un array la valeur du cours associé à l'id de la vente
+                        $currencyPriceSale = $transaction->amount_sale * $transaction->price_currency / $transaction->amount_investment;
+                        $currenciesPriceSales += [$transaction->id => $currencyPriceSale];
+                        // Calcul des gains pour les transactions terminées
+                        $gain = $transaction->amount_sale - $transaction->amount_investment;
+                        $gainInvestments += [$transaction->id => number_format($gain, 2, '.', ' ')];
+                    }
+
                 }
             }
         }
+
+        $totalOldInvestments = $totalSale - $totalGain;
+        $balance = $totalInvestments + $totalPotentialGain; // solde du compte
 
         return view('admin.transactions.index', [
             'transactions' => $transactions,
             'currenciesName' => $currenciesName,
             'currenciesPrice' => $currenciesPrice,
             'currenciesPriceNow' => $currenciesPriceNow,
+            'currenciesPriceSales' => $currenciesPriceSales,
             'gainInvestments' => $gainInvestments,
             'totalInvestments' => $totalInvestments,
+            'totalOldInvestments' => $totalOldInvestments,
+            'totalSale' => $totalSale,
             'totalPotentialGain' => $totalPotentialGain,
-            'totalGain' => $totalGain
+            'totalGain' => $totalGain,
+            'balance' => $balance
         ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Affichage de la page pour effectuer l'achat d'une crypto-monnaie
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($symbol)
-    {
-        $symbolCurrency = $symbol;
-        return view('admin.transactions.buy', ['symbol' => $symbolCurrency]);
-    }
-
     public function buy($currencySymbol)
     {
         // Récupération des données de la crypto-monnaie
@@ -124,7 +138,7 @@ class TransactionsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Enregistrement d'une transaction en base de données
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -165,54 +179,54 @@ class TransactionsController extends Controller
             'currency_id' => $currencyID
         ]));
 
-        return redirect()->route('wallet.index')->with('message', 'Produit mis à jour !');
+        return redirect()->route('wallet.index')->with('message', 'Transaction effectuée avec succès ! Retrouvez votre investissement dans le tableau ci-dessous.');
     }
 
     /**
-     * Display the specified resource.
+     * Vente de la transaction et enregistrement en BDD
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function sell($id)
     {
-        //
+
+        // Récupération des données utilisateurs, transaction à vendre et monnaie associée
+        $userID = Auth::id();
+        $transaction = Transaction::find($id);
+        $transactionUserID = $transaction->user_id;
+
+        // Vérification qu'il s'agit bien de l'utilisateur en cours qui fait la vente
+        if ($userID == $transactionUserID) {
+
+            // Récupération des initiales de la crypto-monnaie
+            $currencyID = $transaction->currency_id;
+            $currencyData = Currency::find($currencyID);
+            $currencyName = $currencyData->initials; // à utiliser pour l'appel de l'API
+
+            // Récupération du prix actuel de la crypto-monnaie
+            $request = 'https://min-api.cryptocompare.com/data/price?fsym='.$currencyName.'&tsyms=EUR';
+            $currencyRequest = $this->requestAPI($request);
+            $currencyPrice = $currencyRequest->EUR;
+
+            // Calcul du montant de la vente
+            $sale = $currencyPrice * $transaction->amount_investment / $transaction->price_currency;
+
+            $transaction->update([
+                'date_sale' => date('Y-m-d H:i:s'),
+                'amount_sale' => $sale,
+                'sold' => 1
+            ]);
+
+            return redirect()->route('wallet.index')->with('message', 'Vente effectuée ! Retrouvez vos gains dans votre solde en haut à droite.');
+        } else {
+
+            return redirect()->route('wallet.index')->with('message', 'Vente annulée ! Vous n\'avez pas les droits pour effectuer cette transaction.');
+        }
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
+    // Fonction d'initialisation d'un appel d'API avec Guzzle
     public function requestAPI($request)
     {
         $client = new Client();
