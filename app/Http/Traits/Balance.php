@@ -53,4 +53,14 @@ trait Balance {
 
         return $balance;
     }
+
+    // Fonction d'initialisation d'un appel d'API avec Guzzle
+    public function requestAPI($request)
+    {
+        $client = new Client();
+        $response = $client->request('GET', $request);
+        $resultAPI = json_decode($response->getBody()->getContents());
+
+        return $resultAPI;
+    }
 }

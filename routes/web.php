@@ -17,7 +17,11 @@ Route::get('home', 'HomeController@index')->name('home');
 Route::get('admin', 'HomeController@index')->name('admin');
 
 
-Route::get('admin/account', 'HomeController@showAccount')->name('account')->middleware('auth');
+Route::get('admin/account', 'UsersController@show')->name('account')->middleware('auth');
+Route::get('admin/account/edit', 'UsersController@editAccount')->name('account/edit')->middleware('auth');
+Route::put('admin/account/udpate', 'UsersController@updateAccount')->name('account.update')->middleware('auth');
+Route::get('admin/account/reset-password', 'UsersController@resetPassword')->name('account/reset-password')->middleware('auth');
+Route::put('admin/account/udpate-password', 'UsersController@updatePassword')->name('account.updatePassword')->middleware('auth');
 Route::get('admin/currencies', 'HomeController@showCurrencies')->name('currencies')->middleware('auth');
 Route::get('admin/currency/{n}', 'HomeController@showCurrency')->where('n', '[A-Z]+')->middleware('auth');
 

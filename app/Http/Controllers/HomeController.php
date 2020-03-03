@@ -13,8 +13,6 @@ class HomeController extends Controller
 {
     use Balance;
 
-    protected $balance;
-
     /**
      * Create a new controller instance.
      *
@@ -77,19 +75,12 @@ class HomeController extends Controller
 
         $currenciesName = Currency::all();
 
-        $balance = $this->getBalance();
-
-        return view('admin/currencies', ['currenciesPrice' => $currenciesPrice, 'currenciesName' => $currenciesName, 'balance' => $balance]);
-    }
-
-    public function showAccount()
-    {
         $userID = Auth::id();
         $user = User::find($userID);
 
         $balance = $this->getBalance();
 
-        return view('admin/account', ['user' => $user, 'balance' => $balance]);
+        return view('admin/currencies', ['currenciesPrice' => $currenciesPrice, 'currenciesName' => $currenciesName, 'user' => $user, 'balance' => $balance]);
     }
 
     public function requestAPI($request)

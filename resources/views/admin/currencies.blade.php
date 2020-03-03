@@ -37,7 +37,9 @@
                 <td><p>{{ number_format($currency->EUR->PRICE, 2, '.', ' ') }} €</p></td>
                 <td>
                     <a class="btn btn-outline-primary" href="currency/{{ $currency->EUR->FROMSYMBOL }}">Voir l'historique</a>
+                    @if ($user->role == 'client')
                     <a class="btn btn-primary" href="{{ route('buy', $currency->EUR->FROMSYMBOL) }}">Acheter</a>
+                    @endif
                 </td>
             </tr>
             @endforeach
