@@ -7,9 +7,12 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use App\Currency;
 use App\Transaction;
+use App\Http\Traits\Balance;
 
 class TransactionsController extends Controller
 {
+    use Balance;
+
     /**
      * Create a new controller instance.
      *
@@ -18,6 +21,7 @@ class TransactionsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
     }
 
     /**
@@ -129,11 +133,14 @@ class TransactionsController extends Controller
             }
         }
 
+        $balance = $this->getBalance();
+
         return view('admin.transactions.buy', [
             'currencyID' => $currencyID,
             'currencyName' => $currencyName,
             'currencySymbol' => $currencySymbol,
-            'currencyPrice' => $currencyPrice
+            'currencyPrice' => $currencyPrice,
+            'balance' => $balance
         ]);
     }
 

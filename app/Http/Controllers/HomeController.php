@@ -7,9 +7,14 @@ use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use App\Http\Traits\Balance;
 
 class HomeController extends Controller
 {
+    use Balance;
+
+    protected $balance;
+
     /**
      * Create a new controller instance.
      *
@@ -18,6 +23,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
     }
 
     /**
@@ -51,12 +57,15 @@ class HomeController extends Controller
             }
         }
 
+        $balance = $this->getBalance();
+
         return view('admin/currency',  [
             'currencyDays' => $currencyDays,
             'currencyPrices' => $currencyPrices,
             'currencyPrice' => $currencyPrice,
             'currencyName' => $currency,
-            'id' => $currencySymbol
+            'id' => $currencySymbol,
+            'balance' => $balance
         ]);
     }
 
@@ -68,7 +77,9 @@ class HomeController extends Controller
 
         $currenciesName = Currency::all();
 
-        return view('admin/currencies', ['currenciesPrice' => $currenciesPrice, 'currenciesName' => $currenciesName]);
+        $balance = $this->getBalance();
+
+        return view('admin/currencies', ['currenciesPrice' => $currenciesPrice, 'currenciesName' => $currenciesName, 'balance' => $balance]);
     }
 
     public function showAccount()
@@ -76,7 +87,9 @@ class HomeController extends Controller
         $userID = Auth::id();
         $user = User::find($userID);
 
-        return view('admin/account', ['user' => $user]);
+        $balance = $this->getBalance();
+
+        return view('admin/account', ['user' => $user, 'balance' => $balance]);
     }
 
     public function requestAPI($request)

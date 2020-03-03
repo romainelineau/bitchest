@@ -37,6 +37,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('account') }}">Compte</a>
                     </li>
+                    <li class="nav-item">
+                        <p>Solde : {{ $balance }} €</p>
+                    </li>
                 </ul>
                 <ul class="navbar-nav">
                     <li>
