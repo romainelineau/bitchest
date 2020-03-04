@@ -16,17 +16,23 @@ Route::get('/', 'HomeController@index');
 Route::get('home', 'HomeController@index')->name('home');
 Route::get('admin', 'HomeController@index')->name('admin');
 
+Route::middleware('auth')->group(function () {
+    Route::get('admin/account', 'UsersController@show')->name('account');
+    Route::get('admin/account/edit', 'UsersController@editAccount')->name('account/edit');
+    Route::put('admin/account/udpate', 'UsersController@updateAccount')->name('account.update');
+    Route::get('admin/account/reset-password', 'UsersController@resetPassword')->name('account/reset-password');
+    Route::put('admin/account/udpate-password', 'UsersController@updatePassword')->name('account.updatePassword');
+    Route::get('admin/currencies', 'HomeController@showCurrencies')->name('currencies');
+    Route::get('admin/currency/{n}', 'HomeController@showCurrency')->where('n', '[A-Z]+');
 
-Route::get('admin/account', 'UsersController@show')->name('account')->middleware('auth');
-Route::get('admin/account/edit', 'UsersController@editAccount')->name('account/edit')->middleware('auth');
-Route::put('admin/account/udpate', 'UsersController@updateAccount')->name('account.update')->middleware('auth');
-Route::get('admin/account/reset-password', 'UsersController@resetPassword')->name('account/reset-password')->middleware('auth');
-Route::put('admin/account/udpate-password', 'UsersController@updatePassword')->name('account.updatePassword')->middleware('auth');
-Route::get('admin/currencies', 'HomeController@showCurrencies')->name('currencies')->middleware('auth');
-Route::get('admin/currency/{n}', 'HomeController@showCurrency')->where('n', '[A-Z]+')->middleware('auth');
+    Route::middleware('Client')->group(function () {
+        Route::get('admin/currency/{n}/buy', 'TransactionsController@buy')->name('buy');
+        Route::get('admin/wallet/sell/{n}', 'TransactionsController@sell');
+        Route::resource('admin/wallet', 'TransactionsController');
+    });
 
-Route::get('admin/currency/{n}/buy', 'TransactionsController@buy')->name('buy')->middleware('auth');
-Route::get('admin/wallet/sell/{n}', 'TransactionsController@sell')->middleware('auth');
-Route::resource('admin/wallet', 'TransactionsController')->middleware('auth');
+    Route::middleware('Admin')->group(function () {
+        Route::resource('admin/users', 'UsersController');
+    });
 
-Route::resource('admin/users', 'UsersController')->middleware('auth');
+});
