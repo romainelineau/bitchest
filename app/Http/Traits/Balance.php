@@ -49,7 +49,7 @@ trait Balance {
             }
         }
 
-        $balance = number_format(($totalInvestments + $totalPotentialGain), 2, '.', ' '); // solde du compte
+        $balance = ($totalInvestments + $totalPotentialGain); // solde du compte
 
         return $balance;
     }

@@ -14,7 +14,7 @@ class UsersController extends Controller
     use Balance;
 
     /**
-     * Create a new controller instance.
+     * Nouvelle instance du controller
      *
      * @return void
      */
@@ -25,33 +25,36 @@ class UsersController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Affichage de la liste des utilisateurs
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
+        // Récupération des utilisateurs
         $users = User::all();
 
+        // Récupération du solde
         $balance = $this->getBalance();
 
         return view('admin.users.index', ['users' => $users, 'balance' => $balance]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Affichage du formulaire de création d'un utilisateur
      *
      * @return \Illuminate\Http\Response
      */
     public function create()
     {
+        // Récupération du solde
         $balance = $this->getBalance();
 
         return view('admin.users.create', ['balance' => $balance]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Enregistrement du nouvel utilisateur en BDD
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -77,7 +80,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Affichage des données personnelles sur la page Mon Compte
      *
      * @return \Illuminate\Http\Response
      */
@@ -92,17 +95,21 @@ class UsersController extends Controller
     }
 
     /**
-     * Affichage du formulaire d'édition / Accès depuis la page Mon Compte
+     * Affichage du formulaire d'édition des données personnelles / Accès depuis la page Mon Compte
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function editAccount()
     {
+        // Récupération des données utilisateurs
         $userID = Auth::id();
         $user = User::find($userID);
+
+        // Création d'une variable pour identifier l'origine de l'utilisateur (Page Mon compte / Page Utilisateurs) sur la vue
         $accountEdit = true;
 
+        // Récupération du solde
         $balance = $this->getBalance();
 
         return view('admin.users.edit', ['user' =>  $user, 'balance' => $balance, 'accountEdit' => $accountEdit]);
@@ -110,7 +117,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Mise à jour du compte utilisateur en cours (!! récupération de l'identifiant depuis l'Auth)
+     * Mise à jour des données personnelles
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -128,7 +135,7 @@ class UsersController extends Controller
 
         // Récupération du user en cours
         // et mise à jour des données dans la table
-        $userID = Auth::id();
+        $userID = Auth::id(); // !! récupération de l'identifiant depuis l'Auth par mesure de sécurité
         $user = User::find($userID);
         $user->update($request->all());
 
@@ -143,9 +150,11 @@ class UsersController extends Controller
      */
     public function resetPassword()
     {
+        // Récupération des données utilisateurs
         $userID = Auth::id();
         $user = User::find($userID);
 
+        // Récupération du solde
         $balance = $this->getBalance();
 
         return view('admin.users.resetPassword', ['user' =>  $user, 'balance' => $balance]);
@@ -186,13 +195,14 @@ class UsersController extends Controller
         // Récupération des données User
         $user = User::find($id);
 
+        // Récupération du solde
         $balance = $this->getBalance();
 
         return view('admin.users.edit', ['user' =>  $user, 'balance' => $balance]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Mise à jour des données utilisateurs en BDD
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -218,7 +228,7 @@ class UsersController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Suppression de l'utilisateur
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -238,7 +248,7 @@ class UsersController extends Controller
             return redirect('admin/users')->with('alerte', 'Attention ! Vous ne pouvez pas supprimer cet utilisateur car il a des transactions en cours !');
         }
         else {
-            // Sinon on le supprimer de la database
+            // Sinon on le supprime de la database
             $user->delete();
 
             return redirect('admin/users')->with('message', 'Utilisateur supprimé !');

@@ -14,7 +14,7 @@ class TransactionsController extends Controller
     use Balance;
 
     /**
-     * Create a new controller instance.
+     * Nouvelle instance du controller
      *
      * @return void
      */
@@ -66,9 +66,8 @@ class TransactionsController extends Controller
                     $currencyInitials = $currency->initials;
                     // on va chercher le cours actuel de la currency correspondante dans l'API
                     $currencyPriceNow = $currenciesPrice->RAW->$currencyInitials->EUR->PRICE;
-                    $currencyPriceNowFormat = number_format($currencyPriceNow, 2, '.', ' ');
                     // on push dans un array la valeur du cours associé à l'id de la transaction
-                    $currenciesPriceNow += [$transaction->id => $currencyPriceNowFormat];
+                    $currenciesPriceNow += [$transaction->id => $currencyPriceNow];
 
                     // Array des Gains (transactions en cours / transactions terminées)
                     if ($transaction->sold == 0) {
@@ -133,6 +132,7 @@ class TransactionsController extends Controller
             }
         }
 
+        // Récupération du solde
         $balance = $this->getBalance();
 
         return view('admin.transactions.buy', [
@@ -169,8 +169,7 @@ class TransactionsController extends Controller
         $currencyResult = $this->requestAPI($requestAPI);
 
         $currencyPrice = $currencyResult->RAW->$currencySymbol->EUR->PRICE;
-        $currencyPriceFormat = number_format($currencyPrice, 2, '.', '');
-        $amountFormat = number_format($request->amount_investment, 2, '.', '');
+        $amountFormat = $request->amount_investment;
 
         // Calcul de la quantité de crypto-monnaie achetée par rapport au montant investi
         $quantity = $amountFormat / $currencyPrice;
@@ -180,8 +179,7 @@ class TransactionsController extends Controller
         Transaction::create(array_merge($request->all(), [
             'date_purchase' => date('Y-m-d H:i:s'),
             'quantity' => $quantityFormat,
-            'price_currency' => $currencyPriceFormat,
-            'sold' => 0,
+            'price_currency' => $currencyPrice,
             'user_id' => $userID,
             'currency_id' => $currencyID
         ]));
@@ -222,11 +220,12 @@ class TransactionsController extends Controller
             $transaction->update([
                 'date_sale' => date('Y-m-d H:i:s'),
                 'amount_sale' => $sale,
-                'sold' => 1
+                'sold' => true
             ]);
 
             return redirect()->route('wallet.index')->with('message', 'Vente effectuée ! Retrouvez vos gains dans votre solde en haut à droite.');
-        } else {
+        }
+        else {
 
             return redirect()->route('wallet.index')->with('message', 'Vente annulée ! Vous n\'avez pas les droits pour effectuer cette transaction.');
         }
