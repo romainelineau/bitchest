@@ -10,12 +10,14 @@
             <h1>Cours des crypto-monnaies</h1>
         </div>
     </div>
+
     <table class="table">
         <thead class="thead-light">
             <tr>
             <th scope="col">#</th>
             <th scope="col">Crypto-monnaie</th>
-            <th scope="col">Cours actuel</th>
+            <th scope="col">Prix actuel</th>
+            <th scope="col">Comp. 24h</th>
             <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -29,12 +31,24 @@
                         @foreach ($currenciesName as $currencyName)
                             @if ($currencyName->initials == $currency->EUR->FROMSYMBOL)
                                 {{ $currencyName->name }}
+                                <span class="text-secondary">({{ $currencyName->initials }})</span>
                             @endif
                         @endforeach
 
                     </p>
                 </td>
-                <td><p>{{ number_format($currency->EUR->PRICE, 2, '.', ' ') }} €</p></td>
+                <td><p>{{ $currency->EUR->PRICE }} €</p></td>
+                <td>
+                    @if ($currency->EUR->CHANGEPCT24HOUR < 0)
+                    <p class="color-red">
+                        {{ number_format($currency->EUR->CHANGEPCT24HOUR, 2, '.', ' ') }} %
+                    </p>
+                    @else
+                    <p class="color-green">
+                        + {{ number_format($currency->EUR->CHANGEPCT24HOUR, 2, '.', ' ') }} %
+                    </p>
+                    @endif
+                </td>
                 <td>
                     <a class="btn btn-outline-primary" href="currency/{{ $currency->EUR->FROMSYMBOL }}">Voir l'historique</a>
                     @if ($user->role == 'client')

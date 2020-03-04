@@ -58,50 +58,64 @@
             <th scope="col">Date d'achat</th>
             <th scope="col">Crypto-monnaie</th>
             <th scope="col">Montant investi</th>
-            <th scope="col">Cours à l'achat / Actuel</th>
+            <th scope="col">Prix d'achat / Prix actuel</th>
             <th scope="col">Gain actuel</th>
             <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($transactions as $transaction)
-            @if ($transaction->sold == 0)
-            <tr>
-                <td><p>{{ $transaction->date_purchase }}</p></td>
-                <td>
-                    <p>
-                        @foreach ($currenciesName as $currencyName)
-                            @if ($currencyName->id == $transaction->currency_id)
-                                {{ $currencyName->name }}
-                                @php
-                                    $initials = $currencyName->initials;
-                                @endphp
-                            @endif
-                        @endforeach
-                    </p>
-                </td>
-                <td><p>{{ number_format($transaction->amount_investment, 2, '.', ' ') }} € <span class="text-secondary">({{ number_format($transaction->quantity, 2, '.', ' ') }} {{ $initials }})</span></p></td>
-                <td><p>{{ number_format($transaction->price_currency, 2, '.', ' ') }} € / {{ $currenciesPriceNow[$transaction->id] }} €</p></td>
-                <td>
-                    @if ($gainInvestments[$transaction->id] < 0)
-                        @php
-                        $gainColor = 'red';
-                        @endphp
-                    @else
-                        @php
-                        $gainColor = 'green';
-                        @endphp
-                    @endif
-                    <p class="color-{{ $gainColor }}">
-                        {{ $gainInvestments[$transaction->id] }} €
-                    </p>
-                </td>
-                <td>
-                    <button class="btn btn-primary sell-transaction" data-toggle="modal" data-target="#modalTransaction" value="{{ $transaction->id }}">Vendre</button>
-                </td>
-            </tr>
+            @if(count($transactions) > 0)
+                @foreach ($transactions as $transaction)
+                @if ($transaction->sold == false)
+                <tr>
+                    <td>
+                        <p>
+                            Le {{ date('d/m/Y', strtotime($transaction->date_purchase)) }}
+                            à {{ date('h\hi', strtotime($transaction->date_purchase)) }}
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            @foreach ($currenciesName as $currencyName)
+                                @if ($currencyName->id == $transaction->currency_id)
+                                    {{ $currencyName->name }}
+                                    @php
+                                        $initials = $currencyName->initials;
+                                    @endphp
+                                @endif
+                            @endforeach
+                        </p>
+                    </td>
+                    <td><p>{{ number_format($transaction->amount_investment, 2, '.', ' ') }} € <span class="text-secondary">({{ number_format($transaction->quantity, 2, '.', ' ') }} {{ $initials }})</span></p></td>
+                    <td><p>{{ number_format($transaction->price_currency, 4, '.', ' ') }} € / {{ number_format($currenciesPriceNow[$transaction->id], 4, '.', ' ') }} €</p></td>
+                    <td>
+                        @if ($gainInvestments[$transaction->id] < 0)
+                            @php
+                            $gainColor = 'red';
+                            @endphp
+                        @else
+                            @php
+                            $gainColor = 'green';
+                            @endphp
+                        @endif
+                        <p class="color-{{ $gainColor }}">
+                            {{ $gainInvestments[$transaction->id] }} €
+                        </p>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary sell-transaction" data-toggle="modal" data-target="#modalTransaction" value="{{ $transaction->id }}">Vendre</button>
+                    </td>
+                </tr>
+                @endif
+                @endforeach
+                @else
+                <tr>
+                    <td>
+                        <p>Aucune transaction n'a été effectuée à ce jour. Faîtes votre premier achat !</p>
+                        <a class="btn btn-primary" href="{{ route('currencies') }}">Acheter</a>
+                    </td>
+                </tr>
             @endif
-            @endforeach
         </tbody>
     </table>
 
@@ -134,46 +148,61 @@
             <th scope="col">Date de la vente</th>
             <th scope="col">Crypto-monnaie</th>
             <th scope="col">Montant investi</th>
-            <th scope="col">Cours à l'achat / À la vente</th>
+            <th scope="col">Prix d'achat / Prix de vente</th>
             <th scope="col">Montant de la vente</th>
+            <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($transactions as $transaction)
-            @if ($transaction->sold == 1)
-            <tr>
-                <td><p>{{ $transaction->date_sale }}</p></td>
-                <td>
-                    <p>
-                        @foreach ($currenciesName as $currencyName)
-                            @if ($currencyName->id == $transaction->currency_id)
-                                {{ $currencyName->name }}
+            @if(count($transactions) > 0)
+                @foreach ($transactions as $transaction)
+                @if ($transaction->sold)
+                <tr>
+                    <td>
+                        <p>
+                            Le {{ date('d/m/Y', strtotime($transaction->date_sale)) }}
+                            à {{ date('h\hi', strtotime($transaction->date_sale)) }}
+                        </p>
+                    </td>
+                    <td>
+                        <p>
+                            @foreach ($currenciesName as $currencyName)
+                                @if ($currencyName->id == $transaction->currency_id)
+                                    {{ $currencyName->name }}
+                                    @php
+                                        $initials = $currencyName->initials;
+                                    @endphp
+                                @endif
+                            @endforeach
+                        </p>
+                    </td>
+                    <td><p>{{ number_format($transaction->amount_investment, 2, '.', ' ') }} € <span class="text-secondary">({{ number_format($transaction->quantity, 2, '.', ' ') }} {{ $initials }})</span></p></td>
+                    <td><p>{{ number_format($transaction->price_currency, 4, '.', ' ') }} € / {{ number_format($currenciesPriceSales[$transaction->id], 4, '.', ' ') }} €</p></td>
+                    <td>
+                        <p>{{ number_format($transaction->amount_sale, 2, '.', ' ') }} €
+                            @if ($gainInvestments[$transaction->id] < 0)
                                 @php
-                                    $initials = $currencyName->initials;
+                                $gainColor = 'red';
+                                @endphp
+                            @else
+                                @php
+                                $gainColor = 'green';
                                 @endphp
                             @endif
-                        @endforeach
-                    </p>
-                </td>
-                <td><p>{{ number_format($transaction->amount_investment, 2, '.', ' ') }} € <span class="text-secondary">({{ number_format($transaction->quantity, 2, '.', ' ') }} {{ $initials }})</span></p></td>
-                <td><p>{{ number_format($transaction->price_currency, 2, '.', ' ') }} € / {{ number_format($currenciesPriceSales[$transaction->id], 2, '.', ' ') }} €</p></td>
-                <td>
-                    <p>{{ number_format($transaction->amount_sale, 2, '.', ' ') }} €
-                        @if ($gainInvestments[$transaction->id] < 0)
-                            @php
-                            $gainColor = 'red';
-                            @endphp
-                        @else
-                            @php
-                            $gainColor = 'green';
-                            @endphp
-                        @endif
-                        <span class="color-{{ $gainColor }}">({{ $gainInvestments[$transaction->id] }} €)</span>
-                    </p>
-                </td>
-            </tr>
+                            <span class="color-{{ $gainColor }}">({{ $gainInvestments[$transaction->id] }} €)</span>
+                        </p>
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-primary" href="{{ route('buy', $initials) }}">Racheter</a>
+                    </td>
+                </tr>
+                @endif
+                @endforeach
+            @else
+                <tr>
+                    <td>Aucune vente n'a été effectuée à ce jour. Faîtes votre première vente pour la voir apparaître ici !</td>
+                </tr>
             @endif
-            @endforeach
         </tbody>
     </table>
 

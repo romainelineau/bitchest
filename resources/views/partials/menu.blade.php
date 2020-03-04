@@ -37,15 +37,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('account') }}">Compte</a>
                     </li>
+                    @if (Auth::user()->role == 'client')
                     <li class="nav-item">
-                        <p>Solde : {{ $balance }} €</p>
+                        <p>Solde : {{ number_format($balance, 2, '.', ' ') }} €</p>
                     </li>
+                    @endif
                 </ul>
                 <ul class="navbar-nav">
                     <li>
-                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            {{ __('Logout') }}
-                        </a>
+                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Déconnexion</a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
