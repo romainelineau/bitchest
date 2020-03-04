@@ -16,12 +16,12 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->dateTime('date_purchase'); // DATETIME : date d'achat
-            $table->float('quantity'); // FLOAT : quantité achetée - pas de limite dans les paramètres
-            $table->decimal('price_currency', 8, 2); // DECIMAL : prix du cours de la monnaie
-            $table->decimal('amount_investment', 8, 2); // DECIMAL : montant de l'investissement en euros
+            $table->decimal('quantity', 12, 2); // DECIMAL : quantité achetée
+            $table->decimal('price_currency', 20, 10); // DECIMAL : prix du cours de la monnaie
+            $table->decimal('amount_investment', 12, 2); // DECIMAL : montant de l'investissement en euros
             $table->dateTime('date_sale')->nullable(); // DATETIME : date de revente
-            $table->decimal('amount_sale', 8, 2)->nullable(); // DECIMAL : montant total récupéré en euros
-            $table->boolean('sold'); // BOOLEAN : true = vendu
+            $table->decimal('amount_sale', 12, 2)->nullable(); // DECIMAL : montant total récupéré en euros
+            $table->boolean('sold')->default(false); // BOOLEAN : true = vendu
             $table->unsignedInteger('user_id'); // INT : id user
             $table->unsignedInteger('currency_id'); // INT : id currency
             $table->foreign('user_id')->references('id')->on('users');

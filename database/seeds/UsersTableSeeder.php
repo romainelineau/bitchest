@@ -18,7 +18,7 @@ class UsersTableSeeder extends Seeder
                 'first_name' => 'Martin',
                 'last_name' => 'Dupont',
                 'email' => 'dupont@la.fr',
-                'password'  =>  Hash::make('client'), // mot de passe crypté
+                'password'  =>  Hash::make('passwordclient'), // mot de passe crypté
                 'role' => 'client'
             ]
         ]);
@@ -27,7 +27,7 @@ class UsersTableSeeder extends Seeder
                 'first_name' => 'Romain',
                 'last_name' => 'Elineau',
                 'email' => 'romain.elineau@gmail.com',
-                'password'  =>  Hash::make('admin'), // mot de passe crypté
+                'password'  =>  Hash::make('passwordadmin'), // mot de passe crypté
                 'role' => 'admin'
             ]
         ]);
