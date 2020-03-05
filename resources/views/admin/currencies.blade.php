@@ -5,59 +5,52 @@
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <h1>Cours des crypto-monnaies</h1>
+    <div class="row bg-light rounded-lg mb-5 px-2 py-3">
+        <div class="col-12 d-flex flex-wrap align-items-center">
+            <h1 class="text-primary font-weight-bold fs-18 mb-1 w-100">Marchés</h1>
+            <p class="font-weight-bold fs-24 m-0">Cours des crypto-monnaies depuis 24h</p>
         </div>
     </div>
 
-    <table class="table">
-        <thead class="thead-light">
-            <tr>
-            <th scope="col">#</th>
-            <th scope="col">Crypto-monnaie</th>
-            <th scope="col">Prix actuel</th>
-            <th scope="col">Comp. 24h</th>
-            <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($currenciesPrice->RAW as $currency)
-            <tr>
-                <th scope="row">{{ $loop->iteration }}</th>
-                <td>
-                    <p><img class="img-fluid currency-logo pr-2" src="https://www.cryptocompare.com{{ $currency->EUR->IMAGEURL }}">
+    <div class="row d-none d-md-flex">
+        <div class="col-4 font-weight-bold text-uppercase text-dark fs-14">Crypto-monnaie</div>
+        <div class="col-2 font-weight-bold text-uppercase text-center text-dark fs-14">Prix actuel</div>
+        <div class="col-2 font-weight-bold text-uppercase text-center text-dark fs-14">Depuis 24h</div>
+        <div class="col-4"></div>
+    </div>
 
-                        @foreach ($currenciesName as $currencyName)
-                            @if ($currencyName->initials == $currency->EUR->FROMSYMBOL)
-                                {{ $currencyName->name }}
-                                <span class="text-secondary">({{ $currencyName->initials }})</span>
-                            @endif
-                        @endforeach
-
-                    </p>
-                </td>
-                <td><p>{{ $currency->EUR->PRICE }} €</p></td>
-                <td>
-                    @if ($currency->EUR->CHANGEPCT24HOUR < 0)
-                    <p class="color-red">
-                        {{ number_format($currency->EUR->CHANGEPCT24HOUR, 2, '.', ' ') }} %
-                    </p>
-                    @else
-                    <p class="color-green">
-                        + {{ number_format($currency->EUR->CHANGEPCT24HOUR, 2, '.', ' ') }} %
-                    </p>
-                    @endif
-                </td>
-                <td>
-                    <a class="btn btn-outline-primary" href="currency/{{ $currency->EUR->FROMSYMBOL }}">Voir l'historique</a>
-                    @if ($user->role == 'client')
-                    <a class="btn btn-primary" href="{{ route('buy', $currency->EUR->FROMSYMBOL) }}">Acheter</a>
-                    @endif
-                </td>
-            </tr>
+    @foreach ($currenciesPrice->RAW as $currency)
+    <div class="row rounded-lg bg-white shadow-sm my-3 px-2 py-3">
+        <div class="col-12 col-sm-6 col-md-4 d-flex align-items-center justify-content-center justify-content-sm-start">
+            <img class="img-fluid currency-logo mr-3" src="https://www.cryptocompare.com{{ $currency->EUR->IMAGEURL }}">
+            @foreach ($currenciesName as $currencyName)
+                @if ($currencyName->initials == $currency->EUR->FROMSYMBOL)
+                <p class="font-weight-bold fs-18 m-0">{{ $currencyName->name }}</p>
+                <p class="text-secondary pl-2 m-0">({{ $currencyName->initials }})</p>
+                @endif
             @endforeach
-        </tbody>
-      </table>
+        </div>
+        <div class="col-6 col-sm-3 col-md-2 d-flex align-items-center justify-content-end justify-content-sm-center mt-3 mt-sm-0">
+            <p class="font-weight-bold m-0">{{ $currency->EUR->PRICE }} €</p>
+        </div>
+        <div class="col-6 col-sm-3 col-md-2 d-flex align-items-center justify-content-start justify-content-sm-center mt-3 mt-sm-0">
+            @if ($currency->EUR->CHANGEPCT24HOUR < 0)
+            <p class="font-weight-bold m-0 text-danger">
+                {{ number_format($currency->EUR->CHANGEPCT24HOUR, 2, '.', ' ') }} %
+            </p>
+            @else
+            <p class="font-weight-bold m-0 text-success">
+                + {{ number_format($currency->EUR->CHANGEPCT24HOUR, 2, '.', ' ') }} %
+            </p>
+            @endif
+        </div>
+        <div class="col-12 col-md-4 d-flex align-items-center justify-content-center justify-content-md-end mt-3 mt-md-0">
+            @if ($user->role == 'client')
+            <a class="btn btn-primary mx-2" href="{{ route('buy', $currency->EUR->FROMSYMBOL) }}">Acheter</a>
+            @endif
+            <a class="btn btn-outline-secondary" href="currency/{{ $currency->EUR->FROMSYMBOL }}">Historique</a>
+        </div>
+    </div>
+    @endforeach
 
 @endsection

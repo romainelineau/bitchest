@@ -5,57 +5,47 @@
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <h1 class="text-center">Gestion des utilisateurs</h1>
+    <div class="row bg-light rounded-lg mb-5 px-2 py-3">
+        <div class="col-12 d-flex flex-wrap align-items-center">
+            <h1 class="text-primary font-weight-bold fs-18 mb-1 w-100">Utilisateurs</h1>
+            <p class="font-weight-bold fs-24 m-0">Gérez les données de vos utilisateurs</p>
         </div>
     </div>
     <div class="row mt-4 mb-5">
         <div class="col text-center">
-            <a class="btn btn-success" href="{{ route('users.create') }}" role="button">Ajouter</a>
+            <a class="btn btn-primary" href="{{ route('users.create') }}" role="button">Ajouter un utilisateur</a>
         </div>
     </div>
 
     @include('admin.users.partials.flash')
 
-    <table class="table">
-        <thead class="thead-light">
-            <tr>
-            <th scope="col">#</th>
-            <th scope="col">Nom</th>
-            <th scope="col">Prénom</th>
-            <th scope="col">Email</th>
-            <th scope="col">Rôle</th>
-            <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($users as $user)
-            <tr>
-                <th scope="row">{{ $loop->iteration }}</th>
-                <td>
-                    <p>{{ $user->last_name }}</p>
-                </td>
-                <td>
-                    <p>{{ $user->first_name }}</p>
-                </td>
-                <td>
-                    <p>{{ $user->email }}</p>
-                </td>
-                <td>
-                    <p>{{ ucfirst($user->role) }}</p>
-                </td>
-                <td>
-                    <a class="btn btn-primary" href="{{ route('users.edit', $user->id) }}">Modifier</a>
-                    <form class="delete d-inline-block" method="POST" action="{{route('users.destroy', $user->id)}}">
-                        {{ method_field('DELETE') }}
-                        {{ csrf_field() }}
-                        <button type="submit" class="btn btn-outline-secondary" role="button"><i class="fas fa-trash-alt"></i> Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-      </table>
+    @foreach ($users as $user)
+    <div class="row rounded-lg bg-white shadow-sm my-3 px-2 py-3">
+        <div class="col-12 col-sm-6 col-md-2 d-flex flex-wrap align-items-center ">
+            <p class="font-weight-bold text-center text-sm-left fs-18 m-0 text-break w-100">{{ $user->last_name }}</p>
+            <p class="text-info text-center text-sm-left m-0 w-100">Nom</p>
+        </div>
+        <div class="col-12 col-sm-6 col-md-2 d-flex flex-wrap align-items-center  mt-3 mt-sm-0">
+            <p class="font-weight-bold text-center text-sm-left fs-18 m-0 text-break w-100">{{ $user->first_name }}</p>
+            <p class="text-info text-center text-sm-left m-0 w-100">Prénom</p>
+        </div>
+        <div class="col-12 col-sm-6 col-md-3 d-flex flex-wrap align-items-center mt-3 mt-sm-0">
+            <p class="font-weight-bold text-center text-sm-left fs-18 m-0 text-break w-100">{{ $user->email }}</p>
+            <p class="text-info text-center text-sm-left m-0 w-100">Email</p>
+        </div>
+        <div class="col-12 col-sm-6 col-md-2 d-flex flex-wrap align-items-center mt-3 mt-sm-0">
+            <p class="font-weight-bold text-center text-sm-left fs-18 m-0 w-100">{{ ucfirst($user->role) }}</p>
+            <p class="text-info text-center text-sm-left m-0 w-100">Rôle</p>
+        </div>
+        <div class="col-12 col-md-3 d-flex flex-wrap align-items-center justify-content-center justify-content-md-end mt-3 mt-md-0">
+            <a class="btn btn-dark mr-2 my-1" href="{{ route('users.edit', $user->id) }}"><i class="fas fa-edit"></i> Modifier</a>
+            <form class="delete d-inline-block" method="POST" action="{{route('users.destroy', $user->id)}}">
+                {{ method_field('DELETE') }}
+                {{ csrf_field() }}
+                <button type="submit" class="btn btn-outline-secondary my-1" role="button"><i class="fas fa-trash-alt"></i> Supprimer</button>
+            </form>
+        </div>
+    </div>
+    @endforeach
 
 @endsection

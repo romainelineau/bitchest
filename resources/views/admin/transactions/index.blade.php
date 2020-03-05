@@ -5,119 +5,186 @@
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <h1>Mon portefeuille</h1>
-        </div>
-    </div>
-
-    <div class="row mb-5">
-        <div class="col-6">
-            <h2 class="my-3">Solde de votre portefeuille</h2>
-            <div class="row">
-                <div class="col-8"><p>Montant investi : </p></div>
-                <div class="col-4"><p>{{ number_format($totalInvestments, 2, '.', ' ') }} €</p></div>
-            </div>
-            <div class="row">
-                <div class="col-8"><p>Vos gains : </p></div>
-                <div class="col-4"><p>{{ number_format($totalPotentialGain, 2, '.', ' ') }} €</div>
-            </div>
-            <div class="row">
-                <div class="col-8 font-weight-bold"><p>Solde : </p></div>
-                <div class="col-4 font-weight-bold"><p>{{ number_format($balance, 2, '.', ' ') }} €</p></div>
-            </div>
-        </div>
-        <div class="col-6">
-            <h2 class="my-3">Total de vos ventes</h2>
-            <div class="row">
-                <div class="col-8"><p>Montant investi : </p></div>
-                <div class="col-4"><p>{{ number_format($totalOldInvestments, 2, '.', ' ') }} €</p></div>
-            </div>
-            <div class="row">
-                <div class="col-8"><p>Gains perçus : </p></div>
-                <div class="col-4"><p>{{ number_format($totalGain, 2, '.', ' ') }} €</p></div>
-            </div>
-            <div class="row">
-                <div class="col-8 font-weight-bold"><p>Montant perçu : </p></div>
-                <div class="col-4 font-weight-bold"><p>{{ number_format($totalSale, 2, '.', ' ') }} €</p></div>
-            </div>
+    <div class="row bg-light rounded-lg mb-5 px-2 py-3">
+        <div class="col-12 d-flex flex-wrap align-items-center">
+            <h1 class="text-primary font-weight-bold fs-18 mb-1 w-100">Mon portefeuille</h1>
+            <p class="font-weight-bold fs-24 m-0">Toutes vos transactions (achats et ventes)</p>
         </div>
     </div>
 
     @include('admin.transactions.partials.flash')
 
-    <div class="row">
-        <div class="col-12">
-            <h2>Vos actifs</h2>
-        </div>
-    </div>
+    <div id="transactions">
 
-    <table class="table">
-        <thead class="thead-light">
-            <tr>
-            <th scope="col">Date d'achat</th>
-            <th scope="col">Crypto-monnaie</th>
-            <th scope="col">Montant investi</th>
-            <th scope="col">Prix d'achat / Prix actuel</th>
-            <th scope="col">Gain actuel</th>
-            <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if(count($transactions) > 0)
-                @foreach ($transactions as $transaction)
-                @if ($transaction->sold == false)
-                <tr>
-                    <td>
-                        <p>
-                            Le {{ date('d/m/Y', strtotime($transaction->date_purchase)) }}
-                            à {{ date('h\hi', strtotime($transaction->date_purchase)) }}
+        <div class="row d-flex justify-content-center mb-5">
+            <div class="btn-group" role="group" aria-label="Affichage des actifs et des ventes">
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#actifs" aria-expanded="true" aria-controls="actifs">Vos actifs</button>
+                <button class="btn btn-primary collapsed" type="button" data-toggle="collapse" data-target="#ventes" aria-expanded="false" aria-controls="ventes">Vos ventes</button>
+            </div>
+        </div>
+
+        <div id="actifs" class="collapse show" data-parent="#transactions">
+
+            @php
+            if($totalPotentialGain >= 0) {
+                $gain = 'success';
+            }
+            else {
+                $gain = 'danger';
+            }
+            @endphp
+
+            <div class="row rounded-lg bg-white shadow-sm font-weight-bold d-flex justify-content-between align-items-center my-4 px-4 py-3">
+                <p class="text-info m-0">Montant investi : <span class="text-dark">{{ number_format($totalInvestments, 2, '.', ' ') }} €</span></p>
+                <p class="text-info m-0">Vos gains potentiels : <span class="text-{{ $gain }}">{{ number_format($totalPotentialGain, 2, '.', ' ') }} €</span></p>
+                <p class="text-info m-0">
+                    Solde : <span class="text-primary">{{ number_format($balance, 2, '.', ' ') }} €</span>
+                    <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Montant total de vos actifs incluant vos gains potentiels">
+                        <button class="border-0 bg-white text-info p-0 ml-1" style="pointer-events: none;" type="button" disabled><i class="fas fa-question-circle"></i></button>
+                    </span>
+                </p>
+            </div>
+
+        @if(count($transactions) > 0)
+            @foreach ($transactions as $transaction)
+            @if ($transaction->sold == false)
+                <div class="row rounded-lg bg-white shadow-sm my-4 px-2 py-3">
+                    <div class="col-12 col-sm-6 col-md-2 d-flex flex-wrap align-items-center font-weight-bold">
+                        <p class="text-info text-center text-md-left m-0 w-100">
+                            <i class="fas fa-calendar-alt"></i> {{ date('d/m/Y', strtotime($transaction->date_purchase)) }}
                         </p>
-                    </td>
-                    <td>
-                        <p>
-                            @foreach ($currenciesName as $currencyName)
-                                @if ($currencyName->id == $transaction->currency_id)
-                                    {{ $currencyName->name }}
-                                    @php
-                                        $initials = $currencyName->initials;
-                                    @endphp
-                                @endif
-                            @endforeach
+                        <p class="text-info text-center text-md-left m-0 w-100">
+                            <i class="fas fa-clock"></i> {{ date('h\hi', strtotime($transaction->date_purchase)) }}
                         </p>
-                    </td>
-                    <td><p>{{ number_format($transaction->amount_investment, 2, '.', ' ') }} € <span class="text-secondary">({{ number_format($transaction->quantity, 2, '.', ' ') }} {{ $initials }})</span></p></td>
-                    <td><p>{{ number_format($transaction->price_currency, 4, '.', ' ') }} € / {{ number_format($currenciesPriceNow[$transaction->id], 4, '.', ' ') }} €</p></td>
-                    <td>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3 d-flex flex-wrap align-items-center mt-4 mt-sm-0">
+                        @foreach ($currenciesName as $currencyName)
+                            @if ($currencyName->id == $transaction->currency_id)
+                                @php
+                                    $name = $currencyName->name;
+                                    $initials = $currencyName->initials;
+                                @endphp
+                            @endif
+                        @endforeach
+                        <p class="text-primary text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($transaction->amount_investment, 2, '.', ' ') }} € <span class="text-dark font-weight-normal fs-14">({{ number_format($transaction->quantity, 2, '.', ' ') }} {{ $initials }})</span></p>
+                        <p class="text-info text-center text-md-left m-0 w-100">investis en {{ $name }}</p>
+                    </div>
+                    <div class="col-12 col-sm-4 col-md-2 d-flex flex-wrap align-items-center mt-4 mt-md-0">
+                        <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($transaction->price_currency, 4, '.', ' ') }} €</p>
+                        <p class="text-info text-center text-md-left m-0 w-100">prix d'achat</p>
+                    </div>
+                    <div class="col-12 col-sm-4 col-md-2 d-flex flex-wrap align-items-center mt-4 mt-md-0">
+                        <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($currenciesPriceNow[$transaction->id], 4, '.', ' ') }} €</p>
+                        <p class="text-info text-center text-md-left m-0 w-100">prix actuel</p>
+                    </div>
+                    <div class="col-12 col-sm-4 col-md-2 d-flex flex-wrap align-items-center mt-4 mt-md-0">
                         @if ($gainInvestments[$transaction->id] < 0)
                             @php
-                            $gainColor = 'red';
+                            $gainColor = 'danger';
                             @endphp
                         @else
                             @php
-                            $gainColor = 'green';
+                            $gainColor = 'success';
                             @endphp
                         @endif
-                        <p class="color-{{ $gainColor }}">
+                        <p class="text-{{ $gainColor }} text-center text-md-left font-weight-bold fs-18 m-0 w-100">
                             {{ $gainInvestments[$transaction->id] }} €
                         </p>
-                    </td>
-                    <td>
+                        <p class="text-info text-center text-md-left m-0 w-100">vos gains</p>
+                    </div>
+                    <div class="col-12 col-md-1 d-flex align-items-center justify-content-center justify-content-md-end mt-3 mt-md-0">
                         <button class="btn btn-primary sell-transaction" data-toggle="modal" data-target="#modalTransaction" value="{{ $transaction->id }}">Vendre</button>
-                    </td>
-                </tr>
-                @endif
-                @endforeach
-                @else
-                <tr>
-                    <td>
-                        <p>Aucune transaction n'a été effectuée à ce jour. Faîtes votre premier achat !</p>
-                        <a class="btn btn-primary" href="{{ route('currencies') }}">Acheter</a>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             @endif
-        </tbody>
-    </table>
+            @endforeach
+            @else
+                <p>Aucune transaction n'a été effectuée à ce jour. Faîtes votre premier achat !</p>
+                <a class="btn btn-primary" href="{{ route('currencies') }}">Acheter</a>
+        @endif
+        </div>
+
+
+
+        <div id="ventes" class="collapse" data-parent="#transactions">
+
+            @php
+            if($totalGain >= 0) {
+                $gain = 'success';
+            }
+            else {
+                $gain = 'danger';
+            }
+            @endphp
+
+            <div class="row rounded-lg bg-white shadow-sm font-weight-bold d-flex justify-content-between align-items-center my-4 px-4 py-3">
+                <p class="text-info m-0">Montant investi : <span class="text-dark">{{ number_format($totalOldInvestments, 2, '.', ' ') }} €</span></p>
+                <p class="text-info m-0">Vos gains : <span class="text-{{ $gain }}">{{ number_format($totalGain, 2, '.', ' ') }} €</span></p>
+                <p class="text-info m-0">
+                    Montant perçu : <span class="text-primary">{{ number_format($totalSale, 2, '.', ' ') }} €</span>
+                    <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Montant total de vos ventes depuis la création de votre compte">
+                        <button class="border-0 bg-white text-info p-0 ml-1" style="pointer-events: none;" type="button" disabled><i class="fas fa-question-circle"></i></button>
+                    </span>
+                </p>
+            </div>
+
+        @if(count($transactions) > 0)
+            @foreach ($transactions as $transaction)
+            @if ($transaction->sold)
+                <div class="row rounded-lg bg-white shadow-sm my-4 px-2 py-3">
+                    <div class="col-12 col-sm-6 col-md-2 d-flex flex-wrap align-items-center font-weight-bold">
+                        <p class="text-info text-center text-md-left m-0 w-100">
+                            <i class="fas fa-calendar-alt"></i> {{ date('d/m/Y', strtotime($transaction->date_sale)) }}
+                        </p>
+                        <p class="text-info text-center text-md-left m-0 w-100">
+                            <i class="fas fa-clock"></i> {{ date('h\hi', strtotime($transaction->date_sale)) }}
+                        </p>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2 d-flex flex-wrap align-items-center mt-4 mt-sm-0">
+                        @foreach ($currenciesName as $currencyName)
+                            @if ($currencyName->id == $transaction->currency_id)
+                                @php
+                                    $name = $currencyName->name;
+                                    $initials = $currencyName->initials;
+                                @endphp
+                            @endif
+                        @endforeach
+                        <p class="text-primary text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($transaction->amount_investment, 2, '.', ' ') }} € <span class="text-dark font-weight-normal fs-14">({{ number_format($transaction->quantity, 2, '.', ' ') }} {{ $initials }})</span></p>
+                        <p class="text-info text-center text-md-left m-0 w-100">investis en {{ $name }}</p>
+                    </div>
+                    <div class="col-12 col-sm-4 col-md-2 d-flex flex-wrap align-items-center mt-4 mt-md-0">
+                        <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($transaction->price_currency, 4, '.', ' ') }} €</p>
+                        <p class="text-info text-center text-md-left m-0 w-100">prix d'achat</p>
+                    </div>
+                    <div class="col-12 col-sm-4 col-md-2 d-flex flex-wrap align-items-center mt-4 mt-md-0">
+                        <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($currenciesPriceSales[$transaction->id], 4, '.', ' ') }} €</p>
+                        <p class="text-info text-center text-md-left m-0 w-100">prix de vente</p>
+                    </div>
+                    <div class="col-12 col-sm-4 col-md-3 d-flex flex-wrap align-items-center mt-4 mt-md-0">
+                        <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">
+                            {{ number_format($transaction->amount_sale, 2, '.', ' ') }} €
+                            @if ($gainInvestments[$transaction->id] < 0)
+                                <span class="text-danger fs-14">({{ $gainInvestments[$transaction->id] }} €)</span>
+                            @else
+                                <span class="text-success fs-14">(+{{ $gainInvestments[$transaction->id] }} €)</span>
+                            @endif
+                        </p>
+                        <p class="text-info text-center text-md-left m-0 w-100">montant de la vente</p>
+                    </div>
+                    <div class="col-12 col-md-1 d-flex align-items-center justify-content-center justify-content-md-end mt-3 mt-md-0">
+                        <a class="btn btn-outline-primary" href="{{ route('buy', $initials) }}">Racheter</a>
+                    </div>
+                </div>
+            @endif
+            @endforeach
+            @else
+                <p>Aucune vente n'a été effectuée à ce jour. Faîtes votre première vente pour la voir apparaître ici !</p>
+                <a class="btn btn-primary" href="{{ route('currencies') }}">Acheter</a>
+        @endif
+
+        </div>
+
+    </div>
 
     <div class="modal fade" id="modalTransaction" tabindex="-1" role="dialog" aria-labelledby="modalTransaction" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -136,76 +203,6 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <h2>Vos ventes</h2>
-        </div>
-    </div>
-
-    <table class="table">
-        <thead class="thead-light">
-            <tr>
-            <th scope="col">Date de la vente</th>
-            <th scope="col">Crypto-monnaie</th>
-            <th scope="col">Montant investi</th>
-            <th scope="col">Prix d'achat / Prix de vente</th>
-            <th scope="col">Montant de la vente</th>
-            <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if(count($transactions) > 0)
-                @foreach ($transactions as $transaction)
-                @if ($transaction->sold)
-                <tr>
-                    <td>
-                        <p>
-                            Le {{ date('d/m/Y', strtotime($transaction->date_sale)) }}
-                            à {{ date('h\hi', strtotime($transaction->date_sale)) }}
-                        </p>
-                    </td>
-                    <td>
-                        <p>
-                            @foreach ($currenciesName as $currencyName)
-                                @if ($currencyName->id == $transaction->currency_id)
-                                    {{ $currencyName->name }}
-                                    @php
-                                        $initials = $currencyName->initials;
-                                    @endphp
-                                @endif
-                            @endforeach
-                        </p>
-                    </td>
-                    <td><p>{{ number_format($transaction->amount_investment, 2, '.', ' ') }} € <span class="text-secondary">({{ number_format($transaction->quantity, 2, '.', ' ') }} {{ $initials }})</span></p></td>
-                    <td><p>{{ number_format($transaction->price_currency, 4, '.', ' ') }} € / {{ number_format($currenciesPriceSales[$transaction->id], 4, '.', ' ') }} €</p></td>
-                    <td>
-                        <p>{{ number_format($transaction->amount_sale, 2, '.', ' ') }} €
-                            @if ($gainInvestments[$transaction->id] < 0)
-                                @php
-                                $gainColor = 'red';
-                                @endphp
-                            @else
-                                @php
-                                $gainColor = 'green';
-                                @endphp
-                            @endif
-                            <span class="color-{{ $gainColor }}">({{ $gainInvestments[$transaction->id] }} €)</span>
-                        </p>
-                    </td>
-                    <td>
-                        <a class="btn btn-outline-primary" href="{{ route('buy', $initials) }}">Racheter</a>
-                    </td>
-                </tr>
-                @endif
-                @endforeach
-            @else
-                <tr>
-                    <td>Aucune vente n'a été effectuée à ce jour. Faîtes votre première vente pour la voir apparaître ici !</td>
-                </tr>
-            @endif
-        </tbody>
-    </table>
-
 @endsection
 
 @section('scripts')
@@ -215,9 +212,10 @@
             $('.sell-transaction').on('click', function() {
                 $idTransaction = $(this).attr('value');
                 $('.confirmation-transaction').attr('href', 'wallet/sell/'+$idTransaction);
-                console.log( $idTransaction );
-            })
-            console.log( "ready!" );
+            });
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            });
         });
     </script>
 

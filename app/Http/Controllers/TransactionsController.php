@@ -123,6 +123,9 @@ class TransactionsController extends Controller
         // Cours de la crypto-monnaie
         $currencyPrice = $currencyResult->RAW->$currencySymbol->EUR->PRICE;
 
+        // Changement du prix depuis 24h
+        $currencyPrice24h = $currencyResult->RAW->$currencySymbol->EUR->CHANGEPCT24HOUR;
+
         // Nom de la crypto-monnaie (comparaison avec la table currencies)
         $currencies = Currency::all();
         foreach ($currencies as $currency) {
@@ -140,6 +143,7 @@ class TransactionsController extends Controller
             'currencyName' => $currencyName,
             'currencySymbol' => $currencySymbol,
             'currencyPrice' => $currencyPrice,
+            'currencyPrice24h' => $currencyPrice24h,
             'balance' => $balance
         ]);
     }

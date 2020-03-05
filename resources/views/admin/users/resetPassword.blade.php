@@ -5,18 +5,18 @@
 @endsection
 
 @section('content')
-    <div class="row mb-5">
-        <div class="col-2">
-            <a class="btn btn-outline-primary" href="{{ route('account') }}" role="button">Retour</a>
+    <div class="row d-flex flex-wrap align-items-center bg-light rounded-lg my-4 mt-md-0 px-2 py-3">
+        <div class="col-12 col-md-10 text-center text-md-left">
+            <h1 class="font-weight-bold fs-24 m-0">Réinitialiser mon mot de passe</h1>
         </div>
-        <div class="col-8">
-            <h1 class="text-center">Réinitialiser mon mot de passe</h1>
+        <div class="col-12 col-md-2 text-center text-md-right mt-3 mt-md-0">
+            <a class="btn btn-outline-primary" href="{{ route('account') }}" role="button">Retour</a>
         </div>
     </div>
 
-    <div class="row d-flex flex-wrap">
+    <div class="row d-flex flex-wrap bg-white rounded-lg shadow-sm py-5">
 
-        <form action="{{route('account.updatePassword')}}" method="POST" enctype="multipart/form-data" class="col-12">
+        <form action="{{route('account.updatePassword')}}" method="POST" enctype="multipart/form-data" class="col-12 col-md-8 col-lg-6 m-auto">
             @method('PUT')
             {{ csrf_field() }}
             <div class="form-row">

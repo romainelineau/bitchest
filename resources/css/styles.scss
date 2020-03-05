@@ -1,0 +1,130 @@
+/* - - - - - - - - -
+*
+* GENERAL
+*
+ - - - - - - - - - */
+body {
+    background: $ultra-light;
+}
+body, h1, h2, h3, h4, h5, h6, p, td {
+    color: #7D869C;
+}
+.currency-logo {
+    max-width: 32px !important;
+}
+.z-index-1 {
+    z-index: 1;
+}
+.z-index-0 {
+    z-index: 0;
+}
+
+/* - - - - - - - - -
+*
+* TYPOGRAPHY
+*
+ - - - - - - - - - */
+.fs-14 {
+    font-size: 0.875em;
+}
+.fs-16 {
+    font-size: 1em;
+}
+.fs-18 {
+    font-size: 1.125em;
+}
+.fs-21 {
+    font-size: 1.3125em;
+}
+.fs-24 {
+    font-size: 1.5em;
+}
+.fs-32 {
+    font-size: 2em;
+}
+
+/* - - - - - - - - -
+*
+* INTERFACE GUEST
+*
+ - - - - - - - - - */
+#app-guest {
+    height: 100vh;
+}
+@media (max-width: 576px) {
+    #navbar-guest .navbar-brand {
+        width: 100%;
+    }
+}
+
+ /* - - - - - - - - -
+*
+* INTERFACE ADMIN
+*
+ - - - - - - - - - */
+#app-admin {
+    width: 100%;
+}
+#app-admin main {
+    margin-left: 17%;
+}
+#app-admin .row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* - - - - - - - - -
+*
+* NAVBAR ADMIN
+*
+ - - - - - - - - - */
+#app-admin #navbar-admin {
+    width: 17%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+#app-admin #navbar-admin .active {
+    color: #3F66E6 !important;
+}
+#app-admin #navbar-admin .balance {
+    background: rgba($color: $dark, $alpha: 0.05);
+    border: none;
+}
+#app-admin .toggle-menu {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+}
+@media (max-width: 992px) {
+    #app-admin main {
+        margin-top: 75px;
+        margin-left: 0;
+    }
+    #app-admin #navbar-admin {
+        min-width: 100%;
+        width: 100%;
+    }
+    #app-admin .navbar-admin-mobile {
+        position: fixed;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 75px;
+    }
+    #app-admin #navbar-admin-nav {
+        padding-top: 100px !important;
+    }
+}
+
+/* - - - - - - - - -
+*
+* WALLET
+*
+ - - - - - - - - - */
+#transactions button.collapsed {
+    background: $white;
+    color: $primary;
+}

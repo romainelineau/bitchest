@@ -1,5 +1,5 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,400i,700,700i&display=swap');
 
 // Variables
 @import 'variables';
@@ -7,15 +7,5 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-.currency-logo {
-    max-width: 32px;
-}
-#navbar-admin {
-    height: 100vh;
-}
-.color-red {
-    color: red;
-}
-.color-green {
-    color: green;
-}
+// Custom styles
+@import '../css/styles.scss';

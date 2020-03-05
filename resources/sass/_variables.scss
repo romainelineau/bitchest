@@ -4,16 +4,28 @@ $body-bg: #fff;
 // Typography
 $font-family-sans-serif: 'Nunito', sans-serif;
 $font-size-base: 0.9rem;
-$line-height-base: 1.6;
+$line-height-base: 1.5;
 
 // Colors
-$blue: #3490dc;
+$blue: #3F66E6;
 $indigo: #6574cd;
 $purple: #9561e2;
 $pink: #f66d9b;
-$red: #e3342f;
+$red: #E41337;
 $orange: #f6993f;
 $yellow: #ffed4a;
-$green: #38c172;
+$green: #03D998;
 $teal: #4dc0b5;
 $cyan: #6cb2eb;
+
+// Charte graphique
+$primary: #3F66E6;
+$secondary: #9FB4C7;
+$success: #03D998;
+$info: #9FB4C7;
+$warning: #3F66E6;
+$danger: #E41337;
+$light: #F2F2F2;
+$ultra-light: #FAFAFA;
+$dark: #587291;
+$gray: #CCC;
