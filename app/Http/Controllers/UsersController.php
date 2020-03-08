@@ -240,7 +240,8 @@ class UsersController extends Controller
         $userID = $user->id;
 
         // On regarde si l'utilisateur a des transactions en cours
-        $transactions = Transaction::where('user_id', $userID)->get();
+        $transactions = Transaction::where('user_id', $userID)->where('sold', false)->get();
+        $transactionsSold = Transaction::where('user_id', $userID)->where('sold', true)->get();
 
         if (count($transactions) > 0) {
 
@@ -248,7 +249,12 @@ class UsersController extends Controller
             return redirect('admin/users')->with('alerte', 'Attention ! Vous ne pouvez pas supprimer cet utilisateur car il a des transactions en cours !');
         }
         else {
-            // Sinon on le supprime de la database
+            if (count($transactionsSold) > 0) {
+
+                // Si l'utilisateur a effectué des ventes, on les supprime de l'historique
+                $transactionsSold->each->delete();
+            }
+            //Suppression de l'utilisateur de la database
             $user->delete();
 
             return redirect('admin/users')->with('message', 'Utilisateur supprimé !');
