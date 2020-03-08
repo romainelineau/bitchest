@@ -54,7 +54,7 @@
                             <i class="fas fa-calendar-alt"></i> {{ date('d/m/Y', strtotime($transaction->date_purchase)) }}
                         </p>
                         <p class="text-info text-center text-md-left m-0 w-100">
-                            <i class="fas fa-clock"></i> {{ date('h\hi', strtotime($transaction->date_purchase)) }}
+                            <i class="fas fa-clock"></i> {{ date('H\hi', strtotime($transaction->date_purchase)) }}
                         </p>
                     </div>
                     <div class="col-12 col-sm-6 col-md-3 d-flex flex-wrap align-items-center mt-4 mt-sm-0">
@@ -128,16 +128,15 @@
                 </p>
             </div>
 
-        @if(count($transactions) > 0)
-            @foreach ($transactions as $transaction)
-            @if ($transaction->sold)
+        @if(count($transactionsSold) > 0)
+            @foreach ($transactionsSold as $transaction)
                 <div class="row rounded-lg bg-white shadow-sm my-4 px-2 py-3">
                     <div class="col-12 col-sm-6 col-md-2 d-flex flex-wrap align-items-center font-weight-bold">
                         <p class="text-info text-center text-md-left m-0 w-100">
                             <i class="fas fa-calendar-alt"></i> {{ date('d/m/Y', strtotime($transaction->date_sale)) }}
                         </p>
                         <p class="text-info text-center text-md-left m-0 w-100">
-                            <i class="fas fa-clock"></i> {{ date('h\hi', strtotime($transaction->date_sale)) }}
+                            <i class="fas fa-clock"></i> {{ date('H\hi', strtotime($transaction->date_sale)) }}
                         </p>
                     </div>
                     <div class="col-12 col-sm-6 col-md-2 d-flex flex-wrap align-items-center mt-4 mt-sm-0">
@@ -175,7 +174,6 @@
                         <a class="btn btn-outline-primary" href="{{ route('buy', $initials) }}">Racheter</a>
                     </div>
                 </div>
-            @endif
             @endforeach
             @else
                 <p>Aucune vente n'a été effectuée à ce jour. Faîtes votre première vente pour la voir apparaître ici !</p>

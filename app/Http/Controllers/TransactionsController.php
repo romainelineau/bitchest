@@ -39,6 +39,7 @@ class TransactionsController extends Controller
         // Récupération des données utilisateurs, transactions et monnaies enregistrées
         $userID = Auth::id();
         $transactions = Transaction::where('user_id', $userID)->orderBy('date_purchase', 'desc')->get();
+        $transactionsSold = Transaction::where('user_id', $userID)->where('sold', true)->orderBy('date_sale', 'desc')->get();
         $currenciesName = Currency::all();
 
         // Initialisation des variables et arrays
@@ -95,6 +96,7 @@ class TransactionsController extends Controller
 
         return view('admin.transactions.index', [
             'transactions' => $transactions,
+            'transactionsSold' => $transactionsSold,
             'currenciesName' => $currenciesName,
             'currenciesPrice' => $currenciesPrice,
             'currenciesPriceNow' => $currenciesPriceNow,
@@ -188,7 +190,7 @@ class TransactionsController extends Controller
             'currency_id' => $currencyID
         ]));
 
-        return redirect()->route('wallet.index')->with('message', 'Transaction effectuée avec succès ! Retrouvez votre investissement dans le tableau ci-dessous.');
+        return redirect()->route('wallet.index')->with('message', 'Transaction effectuée avec succès ! Retrouvez votre investissement dans l\'onglet "Vos actifs".');
     }
 
     /**
@@ -227,7 +229,7 @@ class TransactionsController extends Controller
                 'sold' => true
             ]);
 
-            return redirect()->route('wallet.index')->with('message', 'Vente effectuée ! Retrouvez vos gains dans votre solde en haut à droite.');
+            return redirect()->route('wallet.index')->with('message', 'Vente effectuée ! Retrouvez vos gains dans l\'onglet "Vos ventes".');
         }
         else {
 
