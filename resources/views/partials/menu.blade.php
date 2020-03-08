@@ -20,7 +20,7 @@
         <a class="d-none d-lg-block text-center" href="{{ url('/') }}"><img src="{{ asset('images/logo-min-reverse.png') }}" alt="BitChest"></a>
         <ul class="list-unstyled fs-18">
             <li class="text-center py-3">
-                <a class="text-decoration-none fs-16 font-weight-bold text-info {{ (request()->is('admin/currenc*')) ? 'active' : '' }}" href="{{ route('currencies') }}"><i class="fas fa-dollar-sign"></i> Marchés</a>
+                <a class="text-decoration-none fs-16 font-weight-bold text-info {{ (request()->is('admin/currenc*')) ? 'active' : '' }}" href="{{ route('currencies') }}"><i class="fas fa-dollar-sign"></i> Cours actuels</a>
             </li>
             @if (Auth::user()->role == 'client')
             <li class="text-center py-3">

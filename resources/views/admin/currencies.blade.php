@@ -7,7 +7,7 @@
 @section('content')
     <div class="row bg-light rounded-lg mb-5 px-2 py-3">
         <div class="col-12 d-flex flex-wrap align-items-center">
-            <h1 class="text-primary font-weight-bold fs-18 mb-1 w-100">Marchés</h1>
+            <h1 class="text-primary font-weight-bold fs-18 mb-1 w-100">Cours actuels</h1>
             <p class="font-weight-bold fs-24 m-0">Cours des crypto-monnaies depuis 24h</p>
         </div>
     </div>
