@@ -32,7 +32,7 @@
             </li>
             @endif
             @if (Auth::user()->role == 'client')
-            <p class="balance fs-14 text-center rounded font-weight-bold text-info px-3 py-2 mt-3"><i class="fas fa-university"></i> {{ number_format($balance, 2, '.', ' ') }} €</p>
+            <p class="balance fs-14 text-center rounded font-weight-bold text-info px-3 py-2 mt-3"><i class="fas fa-university"></i> {{ number_format($balance, 2, ',', ' ') }} €</p>
             @endif
         </ul>
         <ul class="list-unstyled fs-18 font-weight-bold text-info w-100 px-4">

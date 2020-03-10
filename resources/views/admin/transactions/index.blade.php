@@ -35,10 +35,10 @@
             @endphp
 
             <div class="row rounded-lg bg-white shadow-sm font-weight-bold d-flex justify-content-between align-items-center my-4 px-4 py-3">
-                <p class="text-info m-0">Montant investi : <span class="text-dark">{{ number_format($totalInvestments, 2, '.', ' ') }} €</span></p>
-                <p class="text-info m-0">Vos gains potentiels : <span class="text-{{ $gain }}">{{ number_format($totalPotentialGain, 2, '.', ' ') }} €</span></p>
+                <p class="text-info m-0">Montant investi : <span class="text-dark">{{ number_format($totalInvestments, 2, ',', ' ') }} €</span></p>
+                <p class="text-info m-0">Vos gains potentiels : <span class="text-{{ $gain }}">{{ number_format($totalPotentialGain, 2, ',', ' ') }} €</span></p>
                 <p class="text-info m-0">
-                    Solde : <span class="text-primary">{{ number_format($balance, 2, '.', ' ') }} €</span>
+                    Solde : <span class="text-primary">{{ number_format($balance, 2, ',', ' ') }} €</span>
                     <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Montant total de vos actifs incluant vos gains potentiels">
                         <button class="border-0 bg-white text-info p-0 ml-1" style="pointer-events: none;" type="button" disabled><i class="fas fa-question-circle"></i></button>
                     </span>
@@ -66,15 +66,15 @@
                                 @endphp
                             @endif
                         @endforeach
-                        <p class="text-primary text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($transaction->amount_investment, 2, '.', ' ') }} € <span class="text-dark font-weight-normal fs-14">({{ number_format($transaction->quantity, 2, '.', ' ') }} {{ $initials }})</span></p>
+                        <p class="text-primary text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($transaction->amount_investment, 2, ',', ' ') }} € <span class="text-dark font-weight-normal fs-14">({{ number_format($transaction->quantity, 2, '.', ' ') }} {{ $initials }})</span></p>
                         <p class="text-info text-center text-md-left m-0 w-100">investis en {{ $name }}</p>
                     </div>
                     <div class="col-12 col-sm-4 col-md-2 d-flex flex-wrap align-items-center mt-4 mt-md-0">
-                        <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($transaction->price_currency, 4, '.', ' ') }} €</p>
+                        <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($transaction->price_currency, 4, ',', ' ') }} €</p>
                         <p class="text-info text-center text-md-left m-0 w-100">prix d'achat</p>
                     </div>
                     <div class="col-12 col-sm-4 col-md-2 d-flex flex-wrap align-items-center mt-4 mt-md-0">
-                        <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($currenciesPriceNow[$transaction->id], 4, '.', ' ') }} €</p>
+                        <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($currenciesPriceNow[$transaction->id], 4, ',', ' ') }} €</p>
                         <p class="text-info text-center text-md-left m-0 w-100">prix actuel</p>
                     </div>
                     <div class="col-12 col-sm-4 col-md-2 d-flex flex-wrap align-items-center mt-4 mt-md-0">
@@ -88,7 +88,7 @@
                             @endphp
                         @endif
                         <p class="text-{{ $gainColor }} text-center text-md-left font-weight-bold fs-18 m-0 w-100">
-                            {{ $gainInvestments[$transaction->id] }} €
+                            {{ str_replace('.', ',', $gainInvestments[$transaction->id]) }} €
                         </p>
                         <p class="text-info text-center text-md-left m-0 w-100">vos gains</p>
                     </div>
@@ -118,10 +118,10 @@
             @endphp
 
             <div class="row rounded-lg bg-white shadow-sm font-weight-bold d-flex justify-content-between align-items-center my-4 px-4 py-3">
-                <p class="text-info m-0">Montant investi : <span class="text-dark">{{ number_format($totalOldInvestments, 2, '.', ' ') }} €</span></p>
-                <p class="text-info m-0">Vos gains : <span class="text-{{ $gain }}">{{ number_format($totalGain, 2, '.', ' ') }} €</span></p>
+                <p class="text-info m-0">Montant investi : <span class="text-dark">{{ number_format($totalOldInvestments, 2, ',', ' ') }} €</span></p>
+                <p class="text-info m-0">Vos gains : <span class="text-{{ $gain }}">{{ number_format($totalGain, 2, ',', ' ') }} €</span></p>
                 <p class="text-info m-0">
-                    Montant perçu : <span class="text-primary">{{ number_format($totalSale, 2, '.', ' ') }} €</span>
+                    Montant perçu : <span class="text-primary">{{ number_format($totalSale, 2, ',', ' ') }} €</span>
                     <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Montant total de vos ventes depuis la création de votre compte">
                         <button class="border-0 bg-white text-info p-0 ml-1" style="pointer-events: none;" type="button" disabled><i class="fas fa-question-circle"></i></button>
                     </span>
@@ -148,24 +148,24 @@
                                 @endphp
                             @endif
                         @endforeach
-                        <p class="text-primary text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($transaction->amount_investment, 2, '.', ' ') }} € <span class="text-dark font-weight-normal fs-14">({{ number_format($transaction->quantity, 2, '.', ' ') }} {{ $initials }})</span></p>
+                        <p class="text-primary text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($transaction->amount_investment, 2, ',', ' ') }} € <span class="text-dark font-weight-normal fs-14">({{ number_format($transaction->quantity, 2, ',', ' ') }} {{ $initials }})</span></p>
                         <p class="text-info text-center text-md-left m-0 w-100">investis en {{ $name }}</p>
                     </div>
                     <div class="col-12 col-sm-4 col-md-2 d-flex flex-wrap align-items-center mt-4 mt-md-0">
-                        <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($transaction->price_currency, 4, '.', ' ') }} €</p>
+                        <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($transaction->price_currency, 4, ',', ' ') }} €</p>
                         <p class="text-info text-center text-md-left m-0 w-100">prix d'achat</p>
                     </div>
                     <div class="col-12 col-sm-4 col-md-2 d-flex flex-wrap align-items-center mt-4 mt-md-0">
-                        <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($currenciesPriceSales[$transaction->id], 4, '.', ' ') }} €</p>
+                        <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">{{ number_format($currenciesPriceSales[$transaction->id], 4, ',', ' ') }} €</p>
                         <p class="text-info text-center text-md-left m-0 w-100">prix de vente</p>
                     </div>
                     <div class="col-12 col-sm-4 col-md-3 d-flex flex-wrap align-items-center mt-4 mt-md-0">
                         <p class="text-dark text-center text-md-left font-weight-bold fs-18 m-0 w-100">
-                            {{ number_format($transaction->amount_sale, 2, '.', ' ') }} €
+                            {{ number_format($transaction->amount_sale, 2, ',', ' ') }} €
                             @if ($gainInvestments[$transaction->id] < 0)
-                                <span class="text-danger fs-14">({{ $gainInvestments[$transaction->id] }} €)</span>
+                                <span class="text-danger fs-14">({{ str_replace('.', ',', $gainInvestments[$transaction->id]) }} €)</span>
                             @else
-                                <span class="text-success fs-14">(+{{ $gainInvestments[$transaction->id] }} €)</span>
+                                <span class="text-success fs-14">(+{{ str_replace('.', ',', $gainInvestments[$transaction->id]) }} €)</span>
                             @endif
                         </p>
                         <p class="text-info text-center text-md-left m-0 w-100">montant de la vente</p>

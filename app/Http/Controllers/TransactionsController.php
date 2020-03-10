@@ -161,9 +161,15 @@ class TransactionsController extends Controller
         // Validation des données saisies
         // Si incorrectes, redirection vers la page de création de formulaire
         $this->validate($request, [
-            'amount_investment' =>  'required|regex:/^([0-9]+)(\.[0-9]{2}){0,1}$/',
+            'amount_investment' =>  'required|regex:/^([0-9]+)([\.,][0-9]{2}){0,1}$/',
             'currency_id' => 'integer'
         ]);
+
+        $amount_investment = $request->amount_investment;
+
+        if (strpos($request->amount_investment, ',') != false) {
+            $amount_investment = str_replace(',', '.', $request->amount_investment);
+        }
 
         $userID = Auth::id();
         $currencyID = $request->currency_id;
@@ -175,11 +181,11 @@ class TransactionsController extends Controller
         $currencyResult = $this->requestAPI($requestAPI);
 
         $currencyPrice = $currencyResult->RAW->$currencySymbol->EUR->PRICE;
-        $amountFormat = $request->amount_investment;
 
         // Calcul de la quantité de crypto-monnaie achetée par rapport au montant investi
-        $quantity = $amountFormat / $currencyPrice;
+        $quantity = $amount_investment / $currencyPrice;
         $quantityFormat = number_format($quantity, 2, '.', '');
+        $amount_investment = number_format($amount_investment, 2, '.', ''); // conversion de la virgule
 
         // Insertion dans la table transaction
         Transaction::create(array_merge($request->all(), [
@@ -187,7 +193,8 @@ class TransactionsController extends Controller
             'quantity' => $quantityFormat,
             'price_currency' => $currencyPrice,
             'user_id' => $userID,
-            'currency_id' => $currencyID
+            'currency_id' => $currencyID,
+            'amount_investment' => $amount_investment
         ]));
 
         return redirect()->route('wallet.index')->with('message', 'Transaction effectuée avec succès ! Retrouvez votre investissement dans l\'onglet "Vos actifs".');

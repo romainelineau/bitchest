@@ -31,16 +31,16 @@
             @endforeach
         </div>
         <div class="col-6 col-sm-3 col-md-2 d-flex align-items-center justify-content-end justify-content-sm-center mt-3 mt-sm-0">
-            <p class="font-weight-bold m-0">{{ $currency->EUR->PRICE }} €</p>
+            <p class="font-weight-bold m-0">{{ str_replace('.', ',', $currency->EUR->PRICE) }} €</p>
         </div>
         <div class="col-6 col-sm-3 col-md-2 d-flex align-items-center justify-content-start justify-content-sm-center mt-3 mt-sm-0">
             @if ($currency->EUR->CHANGEPCT24HOUR < 0)
             <p class="font-weight-bold m-0 text-danger">
-                {{ number_format($currency->EUR->CHANGEPCT24HOUR, 2, '.', ' ') }} %
+                {{ number_format($currency->EUR->CHANGEPCT24HOUR, 2, ',', ' ') }} %
             </p>
             @else
             <p class="font-weight-bold m-0 text-success">
-                + {{ number_format($currency->EUR->CHANGEPCT24HOUR, 2, '.', ' ') }} %
+                + {{ number_format($currency->EUR->CHANGEPCT24HOUR, 2, ',', ' ') }} %
             </p>
             @endif
         </div>

@@ -16,15 +16,15 @@
         <div class="col-12 text-center">
             <p class="font-weight-bold text-uppercase text-dark fs-14">Rappel du prix actuel</p>
             <div class="mt-3">
-                <p class="font-weight-bold text-dark fs-24 m-0">{{ $currencyPrice }} €</p>
+                <p class="font-weight-bold text-dark fs-24 m-0">{{ str_replace('.', ',', $currencyPrice) }} €</p>
                 <p class="font-weight-bold text-info fs-18 m-0">
                     @if ($currencyPrice24h < 0)
                     <span class="font-weight-bold m-0 text-danger">
-                        {{ number_format($currencyPrice24h, 2, '.', ' ') }} %
+                        {{ number_format($currencyPrice24h, 2, ',', ' ') }} %
                     </span>
                     @else
                     <span class="font-weight-bold m-0 text-success">
-                        + {{ number_format($currencyPrice24h, 2, '.', ' ') }} %
+                        + {{ number_format($currencyPrice24h, 2, ',', ' ') }} %
                     </span>
                     @endif
                     depuis 24h
